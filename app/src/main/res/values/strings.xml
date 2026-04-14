@@ -4,4 +4,11 @@
     <string name="input">Input the Answer:</string>
     <string name="right">You\'re Right</string>
     <string name="wrong">You\'re Wrong</string>
+    <string name="apple">apple</string>
+    <string name="mango">mango</string>
+    <string name="grape">grape</string>
+    <string name="orange">orange</string>
+    <string name="avocado">avocado</string>
+    <string name="banana">banana</string>
+    <string name="reload">Reload</string>
 </resources>

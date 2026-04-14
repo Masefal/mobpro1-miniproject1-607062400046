@@ -5,4 +5,11 @@
     <string name="input">Masukkan jawaban:</string>
     <string name="right">Kamu Benar</string>
     <string name="wrong">Kamu Salah</string>
+    <string name="apple">apel</string>
+    <string name="mango">mangga</string>
+    <string name="grape">anggur</string>
+    <string name="orange">jeruk</string>
+    <string name="avocado">alpukat</string>
+    <string name="banana">pisang</string>
+    <string name="reload">Ulangi</string>
 </resources>
