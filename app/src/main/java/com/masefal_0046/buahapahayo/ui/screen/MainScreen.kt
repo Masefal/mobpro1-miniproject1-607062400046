@@ -1,14 +1,9 @@
 package com.masefal_0046.buahapahayo.ui.screen
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,12 +35,12 @@ import com.masefal_0046.buahapahayo.ui.theme.BuahApaHayoTheme
 @Composable
 fun MainScreen() {
     val listBuah = listOf(
-        Buah("apple", R.drawable.apple, R.drawable.pertanyaan_apel),
-        Buah("orange", R.drawable.orange, R.drawable.pertanyaan_jeruk),
-        Buah("grape", R.drawable.grape, R.drawable.pertanyaan_anggur),
-        Buah("mango", R.drawable.manggo, R.drawable.pertanyaan_mangga),
-        Buah("avocado", R.drawable.avocado, R.drawable.pertanyaan_alpukat),
-        Buah("banana", R.drawable.banana, R.drawable.pertanyaan_pisang),
+        Buah(listOf("apple", "apel"), R.drawable.apple, R.drawable.pertanyaan_apel),
+        Buah(listOf("orange", "jeruk"), R.drawable.orange, R.drawable.pertanyaan_jeruk),
+        Buah(listOf("grape", "anggur"), R.drawable.grape, R.drawable.pertanyaan_anggur),
+        Buah(listOf("mango", "mangga"), R.drawable.manggo, R.drawable.pertanyaan_mangga),
+        Buah(listOf("avocado", "alpukat"), R.drawable.avocado, R.drawable.pertanyaan_alpukat),
+        Buah(listOf("banana", "pisang"), R.drawable.banana, R.drawable.pertanyaan_pisang),
     )
     Scaffold(
         topBar = {
@@ -68,66 +63,67 @@ fun MainScreen() {
 }
 
 @Composable
-fun ScreenContent(modifier: Modifier = Modifier, listBuah: List<Buah>) {
-
-    var buah by remember { mutableStateOf(listBuah.random())}
+fun ScreenContent(
+    modifier: Modifier = Modifier,
+    listBuah: List<Buah>
+) {
+    var buah by remember { mutableStateOf(listBuah.random()) }
     var jawaban by remember { mutableStateOf("") }
     var hasil by remember { mutableStateOf("") }
     var dijawab by remember { mutableStateOf(false) }
+    val right = stringResource(R.string.right)
+    val wrong = stringResource(R.string.wrong)
+
+    val imageRes = if (dijawab) buah.imageResId else buah.imagePertanyaanResId
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val right = stringResource(R.string.right)
-        val wrong = stringResource(R.string.wrong)
-        val imageRes = if (dijawab) {
-            buah.imageResId
-        } else {
-            buah.imagePertanyaanResId
-        }
-
         Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = buah.name,
-            modifier = modifier.size(180.dp)
+            painter = painterResource(imageRes),
+            contentDescription = buah.name.first(),
+            modifier = Modifier.size(180.dp)
         )
         Text(
             text = stringResource(R.string.guess),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium
         )
         OutlinedTextField(
             value = jawaban,
             onValueChange = { jawaban = it },
-            label = { Text(text = stringResource(R.string.input))},
-            modifier = modifier.fillMaxWidth()
+            label = { Text(stringResource(R.string.input)) },
+            modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = {
                 dijawab = true
-                hasil = if (jawaban.lowercase() == buah.name) right else wrong
+                val trueCheck = cekJawaban(jawaban, buah.name)
+                hasil = if (trueCheck) right else wrong
             },
-            modifier = modifier.fillMaxWidth(0.5f),
-            contentPadding = PaddingValues(16.dp)
+            enabled = !dijawab,
+            modifier = Modifier.fillMaxWidth(0.6f)
         ) {
-            Text(text = stringResource(R.string.guess))
+            Text(stringResource(R.string.guess))
         }
 
         if (dijawab) {
             Text(
                 text = hasil,
-                modifier = modifier.padding(top = 2.dp),
-                style= MaterialTheme.typography.titleMedium
+                color = if (hasil == right)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.titleMedium
             )
             Button(
                 onClick = {
-                    buah = listBuah.random()
+                    buah = getRandomBuah(listBuah, buah)
                     jawaban = ""
                     hasil = ""
                     dijawab = false
-                },
-                modifier = modifier.fillMaxWidth(0.5f)
+                }
             ) {
                 Text(stringResource(R.string.reload))
             }
@@ -135,6 +131,18 @@ fun ScreenContent(modifier: Modifier = Modifier, listBuah: List<Buah>) {
     }
 }
 
+fun cekJawaban(jawaban: String, key: List<String>): Boolean {
+    val input = jawaban.lowercase().trim()
+    return key.any { it == input }
+}
+
+fun getRandomBuah(list: List<Buah>, current: Buah): Buah {
+    var newBuah: Buah
+    do {
+        newBuah = list.random()
+    } while (newBuah == current)
+    return newBuah
+}
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

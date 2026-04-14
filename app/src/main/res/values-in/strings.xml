@@ -12,4 +12,5 @@
     <string name="avocado">alpukat</string>
     <string name="banana">pisang</string>
     <string name="reload">Ulangi</string>
+    <string name="input_invalid">Tidak boleh kosong!</string>
 </resources>

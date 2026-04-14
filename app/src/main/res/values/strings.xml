@@ -11,4 +11,5 @@
     <string name="avocado">avocado</string>
     <string name="banana">banana</string>
     <string name="reload">Reload</string>
+    <string name="input_invalid">Cannot be empty!</string>
 </resources>
