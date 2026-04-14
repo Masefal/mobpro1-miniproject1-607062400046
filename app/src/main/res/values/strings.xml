@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Buah Apa Hayo</string>
-    <string name="tebak">Tebak</string>
+    <string name="guess">What fruit is this?</string>
+    <string name="input">Input the Answer:</string>
+    <string name="right">You\'re Right</string>
+    <string name="wrong">You\'re Wrong</string>
 </resources>
