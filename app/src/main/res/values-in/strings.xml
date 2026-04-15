@@ -4,7 +4,7 @@
     <string name="guess">Buah apakah ini?</string>
     <string name="input">Masukkan jawaban:</string>
     <string name="right">Kamu Benar</string>
-    <string name="wrong">Kamu Salah</string>
+    <string name="wrong">Kamu Salah, jawabannya adalah: %1$s</string>
     <string name="apple">apel</string>
     <string name="mango">mangga</string>
     <string name="grape">anggur</string>
@@ -13,4 +13,10 @@
     <string name="banana">pisang</string>
     <string name="play_again">Main lagi</string>
     <string name="input_invalid">Tidak boleh kosong!</string>
+    <string name="about">Tentang Aplikasi</string>
+    <string name="app_desc">Buah Apa Hayo adalah aplikasi game sederhana yang dimana user menebak nama buah berdasarkan gambar siluet.\nUser memasukkan jawaban melalui kolom input, lalu aplikasi akan memvalidasi jawaban dan menampilkan hasil benar atau salah. Aplikasi ini mendukung dua bahasa (Inggris dan Indonesia).</string>
+    <string name="back">Kembali</string>
+    <string name="share">Bagikan</string>
+    <string name="right_result">Jawabannya benar!\\nJawaban saya: %1$s</string>
+    <string name="wrong_result">Jawabannya salah!\\nJawaban saya: %1$s\\nJawaban yang benar: %2$s</string>
 </resources>

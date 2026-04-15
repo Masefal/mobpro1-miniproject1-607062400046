@@ -1,9 +1,12 @@
 package com.masefal_0046.buahapahayo.ui.screen
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,9 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -24,20 +29,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.masefal_0046.buahapahayo.R
 import com.masefal_0046.buahapahayo.model.Buah
+import com.masefal_0046.buahapahayo.navigation.Screen
 import com.masefal_0046.buahapahayo.ui.theme.BuahApaHayoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavHostController) {
     val listBuah = listOf(
         Buah(R.string.apple,listOf("apple", "apel"), R.drawable.apple, R.drawable.pertanyaan_apel),
         Buah(R.string.orange,listOf("orange", "jeruk"), R.drawable.orange, R.drawable.pertanyaan_jeruk),
@@ -55,7 +65,18 @@ fun MainScreen() {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        navController.navigate(Screen.About.route)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.about),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -72,15 +93,13 @@ fun ScreenContent(
     listBuah: List<Buah>
 ) {
     var buah by remember { mutableStateOf(listBuah.random()) }
-    var jawaban by remember { mutableStateOf("") }
-    var hasil by remember { mutableStateOf("") }
-    var dijawab by remember { mutableStateOf(false) }
-    var isCorrect by remember { mutableStateOf(false) }
-    var isError by remember { mutableStateOf(false) }
-    val benar = stringResource(R.string.right)
-    val salah = stringResource(R.string.wrong)
+    var jawaban by rememberSaveable { mutableStateOf("") }
+    var dijawab by rememberSaveable { mutableStateOf(false) }
+    var isCorrect by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(false) }
 
     val imageRes = if (dijawab) buah.imageResId else buah.imagePertanyaanResId
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -118,9 +137,7 @@ fun ScreenContent(
                 }
                 isError = false
                 dijawab = true
-
                 isCorrect = cekJawaban(jawaban, buah.nama)
-                hasil = if (isCorrect) benar else salah
             },
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
@@ -128,20 +145,28 @@ fun ScreenContent(
         }
 
         if (dijawab) {
+            val jawabanBuah = buah.nama.first()
+            val messageRight = stringResource(R.string.right_result, jawaban)
+            val messageWrong = stringResource(R.string.wrong_result, jawaban, jawabanBuah)
+            val hasilText = if (isCorrect) {
+                stringResource(R.string.right)
+            } else {
+                stringResource(R.string.wrong, jawabanBuah)
+            }
+
             Text(
-                text = hasil,
-                color = if (hasil == benar) {
+                text = hasilText,
+                color = if (isCorrect) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.error
                 },
                 style = MaterialTheme.typography.titleMedium
             )
-            Button(
+            IconButton(
                 onClick = {
                     buah = getRandomBuah(listBuah, buah)
                     jawaban = ""
-                    hasil = ""
                     dijawab = false
                 }
             ) {
@@ -150,7 +175,27 @@ fun ScreenContent(
                     contentDescription = stringResource(R.string.play_again)
                 )
             }
+            Button(
+                onClick = {
+                    val message = if (isCorrect) messageRight else messageWrong
+                    shareData(context,message)
+                },
+                modifier = Modifier.padding(top = 8.dp),
+                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+            ) {
+                Text(text = stringResource(R.string.share))
+            }
         }
+    }
+}
+
+private fun shareData(context: Context, message: String) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, message)
+    }
+    if (shareIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(shareIntent)
     }
 }
 
@@ -195,6 +240,6 @@ fun ErrorHint(isError: Boolean) {
 @Composable
 fun MainScreenPreview() {
     BuahApaHayoTheme {
-        MainScreen()
+        MainScreen(rememberNavController())
     }
 }

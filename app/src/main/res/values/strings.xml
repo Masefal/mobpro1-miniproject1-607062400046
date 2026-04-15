@@ -3,7 +3,7 @@
     <string name="guess">What fruit is this?</string>
     <string name="input">Input the Answer:</string>
     <string name="right">You\'re Right</string>
-    <string name="wrong">You\'re Wrong</string>
+    <string name="wrong">You\'re Wrong, the answer is: %1$s</string>
     <string name="apple">apple</string>
     <string name="mango">mango</string>
     <string name="grape">grape</string>
@@ -12,4 +12,10 @@
     <string name="banana">banana</string>
     <string name="play_again">Play again</string>
     <string name="input_invalid">Cannot be empty!</string>
+    <string name="about">About</string>
+    <string name="app_desc">Buah Apa Hayo is a simple game application where users guess the name of a fruit based on a silhouette image.\nUsers enter their answer through an input field, and the application will validate the answer and display whether it is correct or incorrect. This application supports two languages (English and Indonesian).</string>
+    <string name="back">Back</string>
+    <string name="share">Share</string>
+    <string name="right_result">Guessed right!\nMy answer: %1$s</string>
+    <string name="wrong_result">Guessed wrong!\nMy answer: %1$s\nCorrect answer: %2$s</string>
 </resources>
