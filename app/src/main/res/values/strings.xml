@@ -10,6 +10,6 @@
     <string name="orange">orange</string>
     <string name="avocado">avocado</string>
     <string name="banana">banana</string>
-    <string name="reload">Reload</string>
+    <string name="play_again">Play again</string>
     <string name="input_invalid">Cannot be empty!</string>
 </resources>

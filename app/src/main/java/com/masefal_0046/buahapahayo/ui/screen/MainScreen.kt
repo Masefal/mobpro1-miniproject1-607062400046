@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -35,12 +38,12 @@ import com.masefal_0046.buahapahayo.ui.theme.BuahApaHayoTheme
 @Composable
 fun MainScreen() {
     val listBuah = listOf(
-        Buah(listOf("apple", "apel"), R.drawable.apple, R.drawable.pertanyaan_apel),
-        Buah(listOf("orange", "jeruk"), R.drawable.orange, R.drawable.pertanyaan_jeruk),
-        Buah(listOf("grape", "anggur"), R.drawable.grape, R.drawable.pertanyaan_anggur),
-        Buah(listOf("mango", "mangga"), R.drawable.manggo, R.drawable.pertanyaan_mangga),
-        Buah(listOf("avocado", "alpukat"), R.drawable.avocado, R.drawable.pertanyaan_alpukat),
-        Buah(listOf("banana", "pisang"), R.drawable.banana, R.drawable.pertanyaan_pisang),
+        Buah(R.string.apple,listOf("apple", "apel"), R.drawable.apple, R.drawable.pertanyaan_apel),
+        Buah(R.string.orange,listOf("orange", "jeruk"), R.drawable.orange, R.drawable.pertanyaan_jeruk),
+        Buah(R.string.grape,listOf("grape", "anggur"), R.drawable.grape, R.drawable.pertanyaan_anggur),
+        Buah(R.string.mango, listOf("mango", "mangga"), R.drawable.manggo, R.drawable.pertanyaan_mangga),
+        Buah(R.string.avocado,listOf("avocado", "alpukat"), R.drawable.avocado, R.drawable.pertanyaan_alpukat),
+        Buah(R.string.banana,listOf("banana", "pisang"), R.drawable.banana, R.drawable.pertanyaan_pisang),
     )
     Scaffold(
         topBar = {
@@ -71,8 +74,9 @@ fun ScreenContent(
     var jawaban by remember { mutableStateOf("") }
     var hasil by remember { mutableStateOf("") }
     var dijawab by remember { mutableStateOf(false) }
-    val right = stringResource(R.string.right)
-    val wrong = stringResource(R.string.wrong)
+    var isCorrect by remember { mutableStateOf(false) }
+    val benar = stringResource(R.string.right)
+    val salah = stringResource(R.string.wrong)
 
     val imageRes = if (dijawab) buah.imageResId else buah.imagePertanyaanResId
 
@@ -83,7 +87,7 @@ fun ScreenContent(
     ) {
         Image(
             painter = painterResource(imageRes),
-            contentDescription = buah.name.first(),
+            contentDescription = buah.nama.first(),
             modifier = Modifier.size(180.dp)
         )
         Text(
@@ -99,10 +103,9 @@ fun ScreenContent(
         Button(
             onClick = {
                 dijawab = true
-                val trueCheck = cekJawaban(jawaban, buah.name)
-                hasil = if (trueCheck) right else wrong
+                isCorrect = cekJawaban(jawaban, buah.nama)
+                hasil = if (isCorrect) benar else salah
             },
-            enabled = !dijawab,
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
             Text(stringResource(R.string.guess))
@@ -111,10 +114,11 @@ fun ScreenContent(
         if (dijawab) {
             Text(
                 text = hasil,
-                color = if (hasil == right)
+                color = if (hasil == benar) {
                     MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.error,
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
                 style = MaterialTheme.typography.titleMedium
             )
             Button(
@@ -125,7 +129,10 @@ fun ScreenContent(
                     dijawab = false
                 }
             ) {
-                Text(stringResource(R.string.reload))
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = stringResource(R.string.play_again)
+                )
             }
         }
     }
