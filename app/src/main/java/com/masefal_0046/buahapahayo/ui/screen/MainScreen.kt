@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -75,13 +76,16 @@ fun ScreenContent(
     var hasil by remember { mutableStateOf("") }
     var dijawab by remember { mutableStateOf(false) }
     var isCorrect by remember { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
     val benar = stringResource(R.string.right)
     val salah = stringResource(R.string.wrong)
 
     val imageRes = if (dijawab) buah.imageResId else buah.imagePertanyaanResId
 
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -96,13 +100,25 @@ fun ScreenContent(
         )
         OutlinedTextField(
             value = jawaban,
-            onValueChange = { jawaban = it },
+            onValueChange = {
+                jawaban = it
+                isError = false
+            },
             label = { Text(stringResource(R.string.input)) },
+            isError = isError,
+            trailingIcon = { IconPicker(isError = isError, unit = "") },
+            supportingText = { ErrorHint(isError = isError) },
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = {
+                if (jawaban.isEmpty()) {
+                    isError = true
+                    return@Button
+                }
+                isError = false
                 dijawab = true
+
                 isCorrect = cekJawaban(jawaban, buah.nama)
                 hasil = if (isCorrect) benar else salah
             },
@@ -143,12 +159,35 @@ fun cekJawaban(jawaban: String, key: List<String>): Boolean {
     return key.any { it == input }
 }
 
-fun getRandomBuah(list: List<Buah>, current: Buah): Buah {
+fun getRandomBuah(buah: List<Buah>, current: Buah): Buah {
     var newBuah: Buah
     do {
-        newBuah = list.random()
+        newBuah = buah.random()
     } while (newBuah == current)
     return newBuah
+}
+
+@Composable
+fun IconPicker(isError: Boolean, unit: String) {
+    if (isError) {
+        Icon(
+            imageVector = Icons.Filled.Warning,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error
+        )
+    } else {
+        Text(text = unit)
+    }
+}
+
+@Composable
+fun ErrorHint(isError: Boolean) {
+    if (isError) {
+        Text(
+            text = stringResource(R.string.input_invalid),
+            color = MaterialTheme.colorScheme.error
+        )
+    }
 }
 
 @Preview(showBackground = true)
